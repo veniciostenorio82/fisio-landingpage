@@ -1,0 +1,15 @@
+LANDING PAGE — CLÍNICA DE FISIOTERAPIA
+
+Conteúdo:
+- index.html: estrutura da página
+- src/index.css: estilos e responsividade
+- src/main.js: interações e conteúdo
+- images/: imagens utilizadas pela página
+- favicon.svg: ícone da página
+
+Para visualizar localmente, abra um terminal nesta pasta e execute:
+  python3 -m http.server 8000
+Depois acesse:
+  http://localhost:8000
+
+É necessário usar um servidor HTTP local; abrir index.html diretamente como arquivo pode bloquear módulos JavaScript no navegador. As fontes Inter usam Google Fonts e precisam de internet; há fontes alternativas caso não carreguem.
