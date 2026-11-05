@@ -322,7 +322,7 @@ h2 { margin-bottom: 16px; font-size: 36px; line-height: 1.15; letter-spacing: -.
 .footer-bottom a, .footer-bottom button { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Booking dialog states */
-.booking-dialog { width: min(540px, calc(100% - 28px)); max-height: min(90dvh, 820px); overflow: auto; padding: 0; border: 0; border-radius: 23px; color: var(--text-body); background: #fff; box-shadow: 0 26px 90px rgba(0,0,0,.25); }
+.booking-dialog { width: min(540px, calc(100% - 28px)); max-height: min(90dvh, 820px); margin: auto; overflow: auto; padding: 0; border: 0; border-radius: 23px; color: var(--text-body); background: #fff; box-shadow: 0 26px 90px rgba(0,0,0,.25); }
 .booking-dialog::backdrop { background: rgba(14,32,23,.62); backdrop-filter: blur(4px); }
 .dialog-inner { position: relative; padding: clamp(24px, 5vw, 42px); }
 .dialog-close { position: absolute; top: 17px; right: 17px; width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; background: #fff; cursor: pointer; }
@@ -339,6 +339,17 @@ h2 { margin-bottom: 16px; font-size: 36px; line-height: 1.15; letter-spacing: -.
 .booking-form > button { grid-column: 1 / -1; margin-top: 5px; }
 .dialog-status { min-height: 21px; margin: 8px 0 0; color: var(--primary); font-size: 12px; }
 .form-privacy { color: var(--text-muted); font-size: 10px; line-height: 1.5; }
+
+.service-dialog { width: min(680px, calc(100% - 28px)); }
+.service-dialog .dialog-close { z-index: 1; background: #fff; }
+.service-dialog-media { height: 220px; overflow: hidden; background: var(--bg-sage); }
+.service-dialog-media img { width: 100%; height: 100%; object-fit: cover; }
+.service-dialog .dialog-inner { padding-top: 28px; }
+.service-dialog .dialog-inner h2 { margin-right: 0; }
+.service-dialog .service-lead { margin: 0 0 20px; color: #525852; font-size: 14px; line-height: 1.7; }
+.service-dialog .benefit-list { margin-bottom: 18px; }
+.service-dialog .service-note { margin: 0 0 22px; color: var(--text-muted); font-size: 12px; line-height: 1.55; }
+.service-dialog-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .reveal { opacity: 0; transform: translateY(16px); transition: opacity .65s ease, transform .65s ease; }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
@@ -429,6 +440,9 @@ h2 { margin-bottom: 16px; font-size: 36px; line-height: 1.15; letter-spacing: -.
   .newsletter-form { display: grid; grid-template-columns: 1fr auto; }
   .newsletter-form label { grid-column: 1 / -1; }
   .newsletter-form .btn { width: auto; padding-inline: 17px; }
+  .service-dialog-media { height: 180px; }
+  .service-dialog-actions { flex-direction: column; }
+  .service-dialog-actions .btn { width: 100%; }
   .footer-bottom { flex-direction: column; gap: 9px; }
 }
 @media (max-width: 480px) {

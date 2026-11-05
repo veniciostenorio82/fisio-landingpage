@@ -45,7 +45,12 @@ export function Services() {
                   <button className="btn btn-primary" type="button" onClick={() => openBooking({ service: service.title })}>
                     Agendar
                   </button>
-                  <button className="btn btn-outline" type="button" onClick={() => openServiceDetail(index)}>
+                  <button
+                    className="btn btn-outline"
+                    type="button"
+                    aria-label={`Saiba mais sobre ${service.title}`}
+                    onClick={() => openServiceDetail(index)}
+                  >
                     Saiba mais
                   </button>
                 </div>
