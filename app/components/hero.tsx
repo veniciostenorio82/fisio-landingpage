@@ -29,13 +29,7 @@ export function Hero() {
         </span>
         Role para explorar
       </a>
-      <div className="hero-glass">
-        <Image src="/images/patient-movement.jpg" alt="" width={54} height={58} />
-        <div>
-          <p>Seu cuidado começa com uma conversa.</p>
-          <a href="#cuidado">Conheça nossa abordagem</a>
-        </div>
-      </div>
+      
     </section>
   );
 }

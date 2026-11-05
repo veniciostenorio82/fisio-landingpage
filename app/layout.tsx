@@ -62,13 +62,14 @@ const jsonLd = {
   description: "Fisioterapia e reabilitação com cuidado individualizado.",
   medicalSpecialty: "Physiotherapy",
   availableLanguage: "Portuguese",
+
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR" className={`${inter.variable} ${interTight.variable}`}>
       <body>
-        <a className="skip-link" href="#conteudo">
+        <a className="skip-link" href="#conteeeudo">
           Pular para o conteúdo
         </a>
         {children}

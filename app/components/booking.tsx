@@ -9,6 +9,7 @@ import {
   type FormEvent,
   type ReactNode,
 } from "react";
+import Image from "next/image";
 import { services } from "../data/clinic";
 import { Icon } from "./icons";
 
@@ -24,10 +25,6 @@ type BookingContextValue = {
 
 const BookingContext = createContext<BookingContextValue | null>(null);
 
-const defaultTitle = "Agende uma avaliação.";
-const defaultDescription =
-  "Deixe seus dados para iniciar a conversa. Os campos são demonstrativos e ainda não enviam informações à clínica.";
-
 export function useBooking() {
   const value = useContext(BookingContext);
   if (!value) {
@@ -38,13 +35,14 @@ export function useBooking() {
 
 export function BookingProvider({ children }: { children: ReactNode }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const detailRef = useRef<HTMLDialogElement>(null);
+  const bookAfterDetail = useRef<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState(defaultTitle);
-  const [description, setDescription] = useState(defaultDescription);
+  const [detailIndex, setDetailIndex] = useState<number | null>(null);
   const [service, setService] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
-  const [focusField, setFocusField] = useState<"name" | "service">("name");
+  const detail = detailIndex !== null ? services[detailIndex] : null;
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -53,13 +51,26 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     if (!dialog.open) dialog.showModal();
     document.body.classList.add("dialog-open");
 
-    const fieldId = focusField === "service" ? "booking-service" : "booking-name";
     const timeout = window.setTimeout(() => {
-      document.getElementById(fieldId)?.focus();
+      document.getElementById("booking-name")?.focus();
     }, 40);
 
     return () => window.clearTimeout(timeout);
-  }, [open, focusField, title]);
+  }, [open]);
+
+  useEffect(() => {
+    const dialog = detailRef.current;
+    if (!dialog || detailIndex === null) return;
+
+    if (!dialog.open) dialog.showModal();
+    document.body.classList.add("dialog-open");
+
+    const timeout = window.setTimeout(() => {
+      document.getElementById("service-detail-title")?.focus();
+    }, 40);
+
+    return () => window.clearTimeout(timeout);
+  }, [detailIndex]);
 
   function closeDialog() {
     dialogRef.current?.close();
@@ -68,31 +79,40 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   function handleDialogClose() {
     document.body.classList.remove("dialog-open");
     setOpen(false);
-    setTitle(defaultTitle);
-    setDescription(defaultDescription);
     setStatus("");
   }
 
   function openBooking(options?: OpenBookingOptions) {
-    setTitle(defaultTitle);
-    setDescription(defaultDescription);
     setService(options?.service ?? "");
     setMessage(options?.message ?? "");
     setStatus("");
-    setFocusField("name");
     setOpen(true);
   }
 
   function openServiceDetail(index: number) {
-    const item = services[index];
-    if (!item) return;
-    setTitle(item.title);
-    setDescription(item.detail);
-    setService(item.title);
-    setMessage("");
-    setStatus("");
-    setFocusField("service");
-    setOpen(true);
+    if (!services[index]) return;
+    setDetailIndex(index);
+  }
+
+  function closeServiceDetail() {
+    detailRef.current?.close();
+  }
+
+  function handleDetailClose() {
+    const nextService = bookAfterDetail.current;
+    bookAfterDetail.current = null;
+    setDetailIndex(null);
+    if (nextService) {
+      openBooking({ service: nextService });
+      return;
+    }
+    document.body.classList.remove("dialog-open");
+  }
+
+  function bookFromDetail() {
+    if (!detail) return;
+    bookAfterDetail.current = detail.title;
+    closeServiceDetail();
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -121,8 +141,11 @@ export function BookingProvider({ children }: { children: ReactNode }) {
             <Icon name="close" />
           </button>
           <span className="eyebrow">Um primeiro passo</span>
-          <h2 id="booking-title">{title}</h2>
-          <p>{description}</p>
+          <h2 id="booking-title">Agende uma avaliação.</h2>
+          <p>
+            Deixe seus dados para iniciar a conversa. Os campos são demonstrativos e ainda não enviam informações à
+            clínica.
+          </p>
           <form className="booking-form" onSubmit={handleSubmit}>
             <div className="field">
               <label htmlFor="booking-name">Seu nome</label>
@@ -179,6 +202,62 @@ export function BookingProvider({ children }: { children: ReactNode }) {
             </p>
           </form>
         </div>
+      </dialog>
+      <dialog
+        ref={detailRef}
+        className="booking-dialog service-dialog"
+        aria-labelledby="service-detail-title"
+        onClose={handleDetailClose}
+        onClick={(event) => {
+          if (event.target === detailRef.current) closeServiceDetail();
+        }}
+      >
+        {detail ? (
+          <>
+            <button
+              className="dialog-close"
+              type="button"
+              aria-label={`Fechar informações sobre ${detail.title}`}
+              onClick={closeServiceDetail}
+            >
+              <Icon name="close" />
+            </button>
+            <div className="service-dialog-media">
+              <Image
+                src={`/images/${detail.img}`}
+                alt={detail.alt}
+                width={680}
+                height={400}
+                style={detail.objectPosition ? { objectPosition: detail.objectPosition } : undefined}
+              />
+            </div>
+            <div className="dialog-inner">
+              <span className="eyebrow">Sobre este cuidado</span>
+              <h2 id="service-detail-title" tabIndex={-1}>
+                {detail.title}
+              </h2>
+              <p className="service-lead">{detail.about.lead}</p>
+              <ul className="benefit-list">
+                {detail.about.points.map((point) => (
+                  <li key={point.title}>
+                    <span>
+                      <strong>{point.title}</strong> {point.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="service-note">{detail.about.note}</p>
+              <div className="service-dialog-actions">
+                <button className="btn btn-primary" type="button" onClick={bookFromDetail}>
+                  Agendar avaliação <Icon name="arrow" />
+                </button>
+                <button className="btn btn-outline" type="button" onClick={closeServiceDetail}>
+                  Fechar
+                </button>
+              </div>
+            </div>
+          </>
+        ) : null}
       </dialog>
     </BookingContext.Provider>
   );
