@@ -52,9 +52,7 @@ export function SiteHeader() {
                 ))}
               </div>
             </details>
-            <a href="#newsletter" title="Conteúdos e novidades por e-mail" onClick={closeMenu}>
-              Blog
-            </a>
+            
             <a href="#faq" onClick={closeMenu}>
               Perguntas frequentes
             </a>
